@@ -2,46 +2,41 @@ const express = require('express')
 const router = express.Router()
 
 let emprestimos = [
-  // { id, livroId, usuarioId, status, dataEmprestimo, dataDevolucao }
+    { id: 1, livroId: 1, usuarioId: 2, dataEmprestimo: "2025-10-01", dataDevolucao: null }
 ]
 
-// CRIAR (emprestar livro)
 router.post('/emprestimos', (req, res) => {
-  const { livroId, usuarioId } = req.body
+    const { livroId, usuarioId, dataEmprestimo } = req.body
+    if(!livroId || !usuarioId || !dataEmprestimo){
+        return res.status(400).json({ error: "livroId, usuarioId e dataEmprestimo são obrigatórios" })
+    }
 
-  if(!livroId || !usuarioId){
-    return res.status(400).json({ error: "livroId e usuarioId são obrigatórios" })
-  }
+    const novoEmprestimo = { 
+        id: Date.now(), 
+        livroId, 
+        usuarioId, 
+        dataEmprestimo, 
+        dataDevolucao: null 
+    }
 
-  const novoEmprestimo = {
-    id: Date.now(),
-    livroId,
-    usuarioId,
-    status: "ativo",
-    dataEmprestimo: new Date().toLocaleString(),
-    dataDevolucao: null
-  }
-
-  emprestimos.push(novoEmprestimo)
-  res.status(201).json({ message: "Empréstimo cadastrado com sucesso!", novoEmprestimo })
+    emprestimos.push(novoEmprestimo)
+    res.status(201).json({ message: "Empréstimo registrado!", novoEmprestimo })
 })
 
-// LISTAR
 router.get('/emprestimos', (req, res) => res.json(emprestimos))
 
-// DEVOLVER LIVRO
-router.put('/emprestimos/:id/devolver', (req, res) => {
-  const id = parseInt(req.params.id)
-  const emprestimo = emprestimos.find(e => e.id === id)
+router.get('/emprestimos/:id', (req, res) => {
+    const emprestimo = emprestimos.find(e => e.id === parseInt(req.params.id))
+    if(!emprestimo) return res.status(404).json({ error: "Empréstimo não encontrado" })
+    res.json(emprestimo)
+})
 
-  if(!emprestimo){
-    return res.status(404).json({ error: "Empréstimo não encontrado" })
-  }
+router.put('/emprestimos/:id/devolucao', (req, res) => {
+    const emprestimo = emprestimos.find(e => e.id === parseInt(req.params.id))
+    if(!emprestimo) return res.status(404).json({ error: "Empréstimo não encontrado" })
 
-  emprestimo.status = "finalizado"
-  emprestimo.dataDevolucao = new Date().toLocaleString()
-
-  res.json({ message: "Livro devolvido com sucesso!", emprestimo })
+    emprestimo.dataDevolucao = new Date().toISOString().split("T")[0]
+    res.json({ message: "Livro devolvido!", emprestimo })
 })
 
 module.exports = router

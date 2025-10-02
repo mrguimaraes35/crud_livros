@@ -1,74 +1,58 @@
 const express = require('express')
 const router = express.Router()
 
+// Lista de livros (simulando banco de dados)
 let livros = [
-  { id: 1, titulo: "Harry Potter", autor: "J. K. Rowling", ano: 1997, disponivel: true },
-  { id: 2, titulo: "A Guerra dos Tronos", autor: "George R. R. Martin", ano: 1996, disponivel: true }
+    { id: 1, titulo: "Dom Casmurro", autorId: 1, ano: 1899, genero: "Romance" },
+    { id: 2, titulo: "O Hobbit", autorId: 2, ano: 1937, genero: "Fantasia" }
 ]
 
-// CRIAR LIVRO
+// Criar livro
 router.post('/livros', (req, res) => {
-  const { titulo, autor, ano } = req.body
+    const { titulo, autorId, ano, genero } = req.body
+    if(!titulo || !autorId || !ano || !genero){
+        return res.status(400).json({ error: "Todos os campos são obrigatórios" })
+    }
 
-  if(!titulo || !autor){
-    return res.status(400).json({ error: "Título e autor são obrigatórios" })
-  }
-
-  const livroExistente = livros.find(l => l.titulo.toLowerCase() === titulo.toLowerCase())
-  if(livroExistente){
-    return res.status(409).json({ error: "Livro já cadastrado" })
-  }
-
-  const novoLivro = { id: Date.now(), titulo, autor, ano: ano || null, disponivel: true }
-  livros.push(novoLivro)
-
-  res.status(201).json({ message: "Livro cadastrado com sucesso!", novoLivro })
+    const novoLivro = { id: Date.now(), titulo, autorId, ano, genero }
+    livros.push(novoLivro)
+    res.status(201).json({ message: "Livro cadastrado com sucesso!", novoLivro })
 })
 
-// LISTAR
-router.get('/livros', (req, res) => res.json(livros))
+// Listar todos
+router.get('/livros', (req, res) => {
+    res.json(livros)
+})
 
-// BUSCAR POR ID
+// Buscar por id
 router.get('/livros/:id', (req, res) => {
-  const id = parseInt(req.params.id)
-  const livro = livros.find(l => l.id === id)
-
-  if(!livro){
-    return res.status(404).json({ error: "Livro não encontrado" })
-  }
-
-  res.json(livro)
+    const livro = livros.find(l => l.id === parseInt(req.params.id))
+    if(!livro) return res.status(404).json({ error: "Livro não encontrado" })
+    res.json(livro)
 })
 
-// ATUALIZAR
+// Atualizar
 router.put('/livros/:id', (req, res) => {
-  const { titulo, autor, ano, disponivel } = req.body
-  const id = parseInt(req.params.id)
-  const livro = livros.find(l => l.id === id)
+    const livro = livros.find(l => l.id === parseInt(req.params.id))
+    if(!livro) return res.status(404).json({ error: "Livro não encontrado" })
 
-  if(!livro){
-    return res.status(404).json({ error: "Livro não encontrado" })
-  }
+    const { titulo, autorId, ano, genero } = req.body
+    if(!titulo || !autorId || !ano || !genero){
+        return res.status(400).json({ error: "Todos os campos são obrigatórios" })
+    }
 
-  livro.titulo = titulo || livro.titulo
-  livro.autor = autor || livro.autor
-  livro.ano = ano || livro.ano
-  livro.disponivel = disponivel !== undefined ? disponivel : livro.disponivel
+    livro.titulo = titulo
+    livro.autorId = autorId
+    livro.ano = ano
+    livro.genero = genero
 
-  res.json({ message: "Livro atualizado com sucesso!", livro })
+    res.json({ message: "Livro atualizado com sucesso!", livro })
 })
 
-// DELETAR
+// Deletar
 router.delete('/livros/:id', (req, res) => {
-  const id = parseInt(req.params.id)
-  const livro = livros.find(l => l.id === id)
-
-  if(!livro){
-    return res.status(404).json({ error: "Livro não encontrado" })
-  }
-
-  livros = livros.filter(l => l.id !== id)
-  res.json({ message: "Livro excluído com sucesso!" })
+    livros = livros.filter(l => l.id !== parseInt(req.params.id))
+    res.json({ message: "Livro removido com sucesso!" })
 })
 
 module.exports = router
