@@ -18,7 +18,7 @@ router.post('/usuarios', (req, res) => {
 router.get('/usuarios', (req, res) => res.json(usuarios))
 
 router.get('/usuarios/:id', (req, res) => {
-    const usuario = usuarios.find(u => u.id === parseInt(req.params.id))
+    const usuario = usuarios.find(usuario => usuario.id === parseInt(req.params.id))
     if(!usuario) return res.status(404).json({ error: "Usuário não encontrado" })
     res.json(usuario)
 })
@@ -34,7 +34,7 @@ router.put('/usuarios/:id', (req, res) => {
 })
 
 router.delete('/usuarios/:id', (req, res) => {
-    usuarios = usuarios.filter(u => u.id !== parseInt(req.params.id))
+    usuarios = usuarios.filter(usuarios => usuarios.id !== parseInt(req.params.id))
     res.json({ message: "Usuário removido!" })
 })
 

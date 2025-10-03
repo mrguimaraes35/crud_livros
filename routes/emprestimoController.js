@@ -26,13 +26,13 @@ router.post('/emprestimos', (req, res) => {
 router.get('/emprestimos', (req, res) => res.json(emprestimos))
 
 router.get('/emprestimos/:id', (req, res) => {
-    const emprestimo = emprestimos.find(e => e.id === parseInt(req.params.id))
+    const emprestimo = emprestimos.find(emprestimo => emprestimo.id === parseInt(req.params.id))
     if(!emprestimo) return res.status(404).json({ error: "Empréstimo não encontrado" })
     res.json(emprestimo)
 })
 
-router.put('/emprestimos/:id/devolucao', (req, res) => {
-    const emprestimo = emprestimos.find(e => e.id === parseInt(req.params.id))
+router.put('/emprestimos/:id', (req, res) => {
+    const emprestimo = emprestimos.find(emprestimo => emprestimo.id === parseInt(req.params.id))
     if(!emprestimo) return res.status(404).json({ error: "Empréstimo não encontrado" })
 
     emprestimo.dataDevolucao = new Date().toISOString().split("T")[0]

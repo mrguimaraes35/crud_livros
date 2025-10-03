@@ -19,13 +19,13 @@ router.post('/avaliacoes', (req, res) => {
 router.get('/avaliacoes', (req, res) => res.json(avaliacoes))
 
 router.get('/avaliacoes/:id', (req, res) => {
-    const avaliacao = avaliacoes.find(a => a.id === parseInt(req.params.id))
+    const avaliacao = avaliacoes.find(avaliacoes => avaliacoes.id === parseInt(req.params.id))
     if(!avaliacao) return res.status(404).json({ error: "Avaliação não encontrada" })
     res.json(avaliacao)
 })
 
 router.delete('/avaliacoes/:id', (req, res) => {
-    avaliacoes = avaliacoes.filter(a => a.id !== parseInt(req.params.id))
+    avaliacoes = avaliacoes.filter(avaliacoes => avaliacoes.id !== parseInt(req.params.id))
     res.json({ message: "Avaliação removida!" })
 })
 

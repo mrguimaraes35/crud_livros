@@ -26,7 +26,7 @@ router.get('/autores/:id', (req, res) => {
 })
 
 router.put('/autores/:id', (req, res) => {
-    const autor = autores.find(a => a.id === parseInt(req.params.id))
+    const autor = autores.find(autor => autor.id === parseInt(req.params.id))
     if(!autor) return res.status(404).json({ error: "Autor não encontrado" })
 
     const { nome, nacionalidade } = req.body

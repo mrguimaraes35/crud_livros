@@ -33,7 +33,7 @@ router.get('/livros/:id', (req, res) => {
 
 // Atualizar
 router.put('/livros/:id', (req, res) => {
-    const livro = livros.find(l => l.id === parseInt(req.params.id))
+    const livro = livros.find(livro => livro.id === parseInt(req.params.id))
     if(!livro) return res.status(404).json({ error: "Livro não encontrado" })
 
     const { titulo, autorId, ano, genero } = req.body
@@ -51,7 +51,7 @@ router.put('/livros/:id', (req, res) => {
 
 // Deletar
 router.delete('/livros/:id', (req, res) => {
-    livros = livros.filter(l => l.id !== parseInt(req.params.id))
+    livros = livros.filter(livro => livro.id !== parseInt(req.params.id))
     res.json({ message: "Livro removido com sucesso!" })
 })
 
